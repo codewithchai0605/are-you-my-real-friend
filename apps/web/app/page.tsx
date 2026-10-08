@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { HomeContent } from '@/components/home-content'
 import { MyQuizzes } from '@/components/my-quizzes'
 import { SiteFooter } from '@/components/site-footer'
+import { AdsterraAd } from '@/components/adsterra-ad'
 
 const DOODLES = [
   { left: '5%', top: '15%', rotate: -15, size: 60, path: '/doodle-white-1.svg', delay: 0 },
@@ -181,9 +182,15 @@ const Page = () => {
         </div>
       </section>
 
+      {/* Kept after the gameplay explanation, so the first ad never interrupts the main action. */}
+      <div className="bg-[#f4f6f8] px-4 pb-2">
+        <AdsterraAd placement="rectangle" />
+      </div>
+
       {/* ============ ABOUT + FAQ + GUIDES (real text for visitors and reviewers) ============ */}
       <HomeContent />
       <div className="bg-white">
+        <AdsterraAd placement="banner" />
         <SiteFooter />
       </div>
       </div>

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { Bear, Panda } from "@/components/mascots";
+import { AdsterraAd } from "@/components/adsterra-ad";
 import { Shell } from "@/components/shell";
 import { BigLink, Wave } from "@/components/ui";
 import { verdictFor } from "@/lib/copy";
@@ -78,6 +79,8 @@ export default async function DonePage({ params }: Props) {
           <p className="mt-2 mb-5 font-display text-lg font-medium text-[#3b4a6b]">Share it with your squad and see who really knows you true.</p>
           <BigLink href="/create">make my quiz</BigLink>
         </section>
+
+        <AdsterraAd placement="rectangle" />
       </div>
     </Shell>
   );

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Bear, Panda } from "@/components/mascots";
+import { AdsterraAd } from "@/components/adsterra-ad";
 import { BackLink, Shell } from "@/components/shell";
 import { SpeechBubble } from "@/components/ui";
 import { getQuizBySlug } from "@/lib/server/quizzes";
@@ -48,6 +49,8 @@ export default async function QuizLandingPage({ params }: Props) {
         </p>
 
         <StartForm slug={slug} ownerName={quiz.ownerName} />
+
+        <AdsterraAd placement="banner" />
 
         <p className="mt-auto text-center font-display text-base font-medium text-[#3b4a6b]/80">
           Flunk it, and {quiz.ownerName} might hit block 🚫

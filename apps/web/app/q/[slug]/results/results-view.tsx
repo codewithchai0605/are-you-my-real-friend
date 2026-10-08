@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, useTransition } from "react";
 import { getResultsAction } from "@/app/actions";
 import { Bear, Panda } from "@/components/mascots";
+import { AdsterraAd } from "@/components/adsterra-ad";
 import { BackLink, Shell } from "@/components/shell";
 import { ShareActions } from "@/components/share-actions";
 import { BigButton, Spinner, softButton } from "@/components/ui";
@@ -155,6 +156,8 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
             <ShareActions url={shareUrl} />
           </section>
         )}
+
+        <AdsterraAd placement="banner" />
       </div>
     </Shell>
   );

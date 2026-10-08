@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Bear, Panda } from "@/components/mascots";
+import { AdsterraAd } from "@/components/adsterra-ad";
 import { Shell } from "@/components/shell";
 import { ShareActions } from "@/components/share-actions";
 import { getQuizBySlug } from "@/lib/server/quizzes";
@@ -56,6 +57,8 @@ export default async function SharePage({ params }: Props) {
         <Link href="/create" className="mx-auto font-display text-lg font-semibold text-blue-1000 underline underline-offset-4">
           Make another quiz
         </Link>
+
+        <AdsterraAd placement="banner" />
 
         <p className="mt-auto text-center font-display text-base font-medium text-[#3b4a6b]/80">
           Every friend gets the questions in a different order. Sneaky!
