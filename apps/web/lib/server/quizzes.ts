@@ -104,7 +104,7 @@ async function findAttempt(quizId: string, visitorId: string) {
 
 /**
  * Called when a friend hits "start".
- *  - the owner opening their own link   → send them to their results
+ *  - the owner opening their own link   → send them to their share page
  *  - a browser that already took it     → resume / show their score (one go per browser)
  *  - otherwise                          → build THEIR version of the quiz:
  *      a fresh random question order + the correct option and ONE random decoy per

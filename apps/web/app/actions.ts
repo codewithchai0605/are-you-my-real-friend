@@ -87,7 +87,7 @@ export async function startAttemptAction(input: unknown): Promise<ActionError> {
     if (!result) return { ok: false, error: "We couldn't find that quiz. Check the link?" };
     target =
       result.kind === "owner"
-        ? `/q/${slug}/results`
+        ? `/q/${slug}/share`
         : result.kind === "completed"
           ? `/q/${slug}/done/${result.attemptId}`
           : `/q/${slug}/play/${result.attemptId}`;
@@ -111,7 +111,7 @@ export async function checkVisitorAction(
   try {
     const status = await getVisitorStatus(slug, visitorId);
     if (!status) return { target: null, owner: false };
-    if (status.kind === "owner") return { target: `/q/${slug}/results`, owner: true };
+    if (status.kind === "owner") return { target: `/q/${slug}/share`, owner: true };
     if (status.kind === "completed") return { target: `/q/${slug}/done/${status.attemptId}`, owner: false };
     return { target: `/q/${slug}/play/${status.attemptId}`, owner: false };
   } catch (error) {

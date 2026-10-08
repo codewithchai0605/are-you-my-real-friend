@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { checkVisitorAction } from "@/app/actions";
 import { getVisitorId, rememberQuiz } from "@/lib/visitor";
 
@@ -10,16 +11,28 @@ import { getVisitorId, rememberQuiz } from "@/lib/visitor";
  * Otherwise a friend who opened /share by guessing would be treated as the owner.
  */
 export function RememberQuiz({ slug, ownerName }: { slug: string; ownerName: string }) {
+  const router = useRouter();
+
   useEffect(() => {
     let cancelled = false;
     checkVisitorAction(slug, getVisitorId())
-      .then(({ owner }) => {
-        if (!cancelled && owner) rememberQuiz(slug, ownerName);
+      .then(({ owner, target }) => {
+        if (cancelled) return;
+
+        if (owner) {
+          rememberQuiz(slug, ownerName);
+          return;
+        }
+
+        // The share screen belongs only to the quiz creator. A friend with an
+        // existing attempt resumes it (or sees their score); a new friend starts
+        // from the public quiz page.
+        router.replace(target ?? `/q/${slug}`);
       })
       .catch(() => {});
     return () => {
       cancelled = true;
     };
-  }, [slug, ownerName]);
+  }, [slug, ownerName, router]);
   return null;
 }
