@@ -20,7 +20,7 @@ const PLACEMENTS = {
 } as const;
 
 // Adsterra reads the global `atOptions` as its script runs. Loading one unit at
-// a time prevents two placements from overwriting each other's configuration.
+// a time prevents two placements from overwriting each other's configuration. 
 let adLoadQueue = Promise.resolve();
 
 export function AdsterraAd({ placement }: AdsterraAdProps) {
