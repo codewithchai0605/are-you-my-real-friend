@@ -91,6 +91,7 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
           <BigButton onClick={refresh} pending={isRefreshing} pendingLabel="Trying…" noArrow>
             Try again
           </BigButton>
+          <AdsterraAd placement="banner" />
         </div>
       </Shell>
     );
@@ -101,7 +102,7 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
   return (
     <Shell back={back}>
       <div className="flex flex-1 flex-col gap-5 pt-2">
-        <section className="animate-pop-in rounded-[2rem] border-[6px] border-white bg-white p-5 text-center shadow-[0_12px_28px_rgba(57,107,151,0.17)]">
+        <section className="animate-pop-in rounded-4xl border-[6px] border-white bg-white p-5 text-center shadow-[0_12px_28px_rgba(57,107,151,0.17)]">
           <h1 className="font-display text-[1.8rem] font-bold leading-tight text-[#17213e]">
             Who knows <span className="text-pink-500">{ownerName}</span> best?
           </h1>
@@ -112,7 +113,7 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
         </section>
 
         {friends.length === 0 ? (
-          <section className="animate-slide-up rounded-[2rem] bg-white/80 p-5 text-center">
+          <section className="animate-slide-up rounded-4xl bg-white/80 p-5 text-center">
             <p className="mb-4 font-display text-xl font-semibold text-[#17213e]">No answers yet — share the link, don&apos;t let it sink!</p>
             <ShareActions url={shareUrl} />
           </section>
@@ -126,7 +127,7 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
                   style={{ animationDelay: `${Math.min(i, 8) * 60}ms` }}
                   className="flex animate-slide-up items-center gap-3 rounded-[1.4rem] bg-white p-3 pr-4 shadow-[0_5px_0_#c9d6e6]"
                 >
-                  <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#eaf4ff] font-display text-xl font-bold text-[#2a8af6]">
+                  <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-[#eaf4ff] font-display text-xl font-bold text-blue-1000">
                     {MEDALS[i] ?? `#${i + 1}`}
                   </span>
                   <span className="min-w-0 flex-1">
@@ -151,7 +152,7 @@ export function ResultsView({ slug, ownerName, shareUrl }: { slug: string; owner
         </button>
 
         {friends.length > 0 && (
-          <section className="rounded-[2rem] bg-white/70 p-5">
+          <section className="rounded-4xl bg-white/70 p-5">
             <p className="mb-3 text-center font-display text-lg font-semibold text-[#17213e]">Need more victims? Share again!</p>
             <ShareActions url={shareUrl} />
           </section>

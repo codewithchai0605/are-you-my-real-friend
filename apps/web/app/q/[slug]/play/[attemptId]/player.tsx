@@ -12,6 +12,7 @@ import { CHECKING_MESSAGES } from "@/lib/copy";
 import type { QuestionOption } from "@/lib/questions";
 import type { Segment } from "@/lib/pronouns";
 import { getVisitorId } from "@/lib/visitor";
+import { AdsterraAd } from "@/components/adsterra-ad";
 
 export type PlayerQuestion = { key: string; segments: Segment[]; options: [QuestionOption, QuestionOption] };
 
@@ -82,6 +83,7 @@ export function Player({ attemptId, ownerGender, questions }: { attemptId: strin
           <BigButton onClick={() => submit(answers)} noArrow>
             Try again
           </BigButton>
+          <AdsterraAd placement="banner" />
         </div>
       </Shell>
     );
@@ -129,6 +131,7 @@ export function Player({ attemptId, ownerGender, questions }: { attemptId: strin
           <Wave className="text-sky-300" width={64} />
           <span>Two choices — only one is true!</span>
         </div>
+        <AdsterraAd placement="banner" />
       </div>
     </Shell>
   );

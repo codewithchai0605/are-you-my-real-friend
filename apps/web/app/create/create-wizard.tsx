@@ -13,6 +13,7 @@ import { NAME_MAX, QUIZ_LENGTH } from "@/lib/constants";
 import type { OptionKey, QuestionOption } from "@/lib/questions";
 import { cleanName } from "@/lib/validation";
 import { getVisitorId } from "@/lib/visitor";
+import { AdsterraAd } from "@/components/adsterra-ad";
 
 type WizardQuestion = { key: string; ask: string; options: readonly QuestionOption[] };
 type Step = "name" | "gender" | "questions";
@@ -165,7 +166,7 @@ export function CreateWizard({ questions }: { questions: readonly WizardQuestion
             hi, <span className="font-bold text-amber-500">{name}</span> 👋
           </p>
           <h1 className="rounded-[1.6rem] bg-white px-7 py-4 text-center font-display text-[1.9rem] font-bold shadow-[0_8px_20px_rgba(60,100,150,0.14)]">
-            choose your <span className="text-sky-500 underline decoration-orange-400 decoration-wavy decoration-[3px] underline-offset-[10px]">gender</span>
+            choose your <span className="text-sky-500 underline decoration-orange-400 decoration-wavy decoration-[3px] underline-offset-10">gender</span>
           </h1>
 
           <div className="mt-6 grid w-full grid-cols-2 gap-4 px-1">
@@ -182,7 +183,7 @@ export function CreateWizard({ questions }: { questions: readonly WizardQuestion
                 className={`group flex flex-col items-center gap-3 rounded-3xl focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#ff5fa2] ${g.rotate}`}
                 aria-label={g.label}
               >
-                <span className="block w-full rounded-[2rem] border-2 border-white bg-white px-3 pb-2 pt-6 shadow-[0_12px_26px_rgba(60,100,150,0.2)] transition duration-200 group-hover:-translate-y-1 group-hover:scale-[1.03] group-active:scale-95">
+                <span className="block w-full rounded-4xl border-2 border-white bg-white px-3 pb-2 pt-6 shadow-[0_12px_26px_rgba(60,100,150,0.2)] transition duration-200 group-hover:-translate-y-1 group-hover:scale-[1.03] group-active:scale-95">
                   {g.art}
                 </span>
                 <span className="font-hand text-3xl text-[#17213e]">{g.label}</span>
@@ -246,6 +247,7 @@ export function CreateWizard({ questions }: { questions: readonly WizardQuestion
           </div>
         </div>
       )}
+      <AdsterraAd placement="banner" />
     </Shell>
   );
 }
