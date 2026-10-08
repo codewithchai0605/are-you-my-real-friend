@@ -1,8 +1,9 @@
 "use server";
 
 import { redirect } from "next/navigation";
+import { cookies, headers } from "next/headers";
 import { GENDERS, type Gender } from "@repo/db";
-import { QUIZ_LENGTH } from "@/lib/constants";
+import { QUIZ_LENGTH, VISITOR_COOKIE } from "@/lib/constants";
 import { getQuestion, getOption, isOptionKey, type OptionKey } from "@/lib/questions";
 import { cleanName, isSlug, isUuid } from "@/lib/validation";
 import {
@@ -27,6 +28,21 @@ const GENERIC_ERROR = "Oops, something went wrong. Please try again in a moment!
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value);
+}
+
+/**
+ * localStorage lets the client create an anonymous id; this HTTP-only mirror lets
+ * server-rendered quiz pages recognise the same browser before they stream UI.
+ */
+async function rememberVisitorOnServer(visitorId: string) {
+  const [cookieStore, requestHeaders] = await Promise.all([cookies(), headers()]);
+  cookieStore.set(VISITOR_COOKIE, visitorId, {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: requestHeaders.get("x-forwarded-proto") === "https",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 365,
+  });
 }
 
 /* ───────────────────────────── create quiz ───────────────────────────── */
@@ -60,6 +76,8 @@ export async function createQuizAction(input: unknown): Promise<ActionError> {
     picks.push({ questionKey: question.key, optionKey: pick.optionKey });
   }
 
+  await rememberVisitorOnServer(input.visitorId);
+
   let slug: string;
   try {
     ({ slug } = await createQuiz({ visitorId: input.visitorId, ownerName, gender, picks }));
@@ -81,6 +99,8 @@ export async function startAttemptAction(input: unknown): Promise<ActionError> {
   if (!isSlug(input.slug)) return { ok: false, error: "That quiz link looks wrong." };
   const { slug, visitorId } = input;
 
+  await rememberVisitorOnServer(visitorId);
+
   let target: string;
   try {
     const result = await startAttempt({ slug, visitorId, friendName });
@@ -99,7 +119,7 @@ export async function startAttemptAction(input: unknown): Promise<ActionError> {
 }
 
 /**
- * Called on page load: has this browser already played / does it own this quiz? Never writes.
+ * Called on page load: has this browser already played / does it own this quiz?
  *  - `target`: where to send the visitor instead of showing the "start" form (null = show the form)
  *  - `owner`:  true only if this browser's id created the quiz
  */
@@ -108,6 +128,7 @@ export async function checkVisitorAction(
   visitorId: unknown,
 ): Promise<{ target: string | null; owner: boolean }> {
   if (!isSlug(slug) || !isUuid(visitorId)) return { target: null, owner: false };
+  await rememberVisitorOnServer(visitorId);
   try {
     const status = await getVisitorStatus(slug, visitorId);
     if (!status) return { target: null, owner: false };
@@ -125,6 +146,8 @@ export async function submitAttemptAction(input: unknown): Promise<ActionError> 
   if (!isUuid(input.visitorId) || !isUuid(input.attemptId) || !isRecord(input.answers)) {
     return { ok: false, error: GENERIC_ERROR };
   }
+
+  await rememberVisitorOnServer(input.visitorId);
 
   const answers: Record<string, string> = {};
   for (const [key, value] of Object.entries(input.answers)) {

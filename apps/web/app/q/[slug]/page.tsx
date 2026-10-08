@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Bear, Panda } from "@/components/mascots";
 import { AdsterraAd } from "@/components/adsterra-ad";
 import { BackLink, Shell } from "@/components/shell";
 import { SpeechBubble } from "@/components/ui";
-import { getQuizBySlug } from "@/lib/server/quizzes";
-import { isSlug } from "@/lib/validation";
+import { VISITOR_COOKIE } from "@/lib/constants";
+import { getQuizBySlug, getVisitorStatus } from "@/lib/server/quizzes";
+import { isSlug, isUuid } from "@/lib/validation";
 import { StartForm } from "./start-form";
 
 // Always render on the server per request (reads Postgres).
@@ -28,6 +30,24 @@ export default async function QuizLandingPage({ params }: Props) {
   if (!isSlug(slug)) notFound();
   const quiz = await getQuizBySlug(slug);
   if (!quiz) notFound();
+
+  // The visitor id is mirrored into an HTTP-only cookie by the Server Actions.
+  // That allows returning owners and players to be redirected before the page UI
+  // is rendered. The client-side check is retained only to migrate browsers that
+  // still have an older localStorage-only id.
+  const visitorId = (await cookies()).get(VISITOR_COOKIE)?.value;
+  let target: string | null = null;
+  if (isUuid(visitorId)) {
+    try {
+      const status = await getVisitorStatus(slug, visitorId);
+      if (status?.kind === "owner") target = `/q/${slug}/share`;
+      else if (status?.kind === "completed") target = `/q/${slug}/done/${status.attemptId}`;
+      else if (status?.kind === "play") target = `/q/${slug}/play/${status.attemptId}`;
+    } catch (error) {
+      console.error("[QuizLandingPage visitor status]", error);
+    }
+  }
+  if (target) redirect(target);
 
   return (
     <Shell back={<BackLink href="/" label="Back to home" />}>

@@ -47,6 +47,20 @@ export function StartForm({ slug, ownerName }: { slug: string; ownerName: string
     });
   }
 
+  if (checking) {
+    return (
+      <div role="status" aria-live="polite" className="flex flex-col items-center gap-3 rounded-3xl bg-white/75 px-5 py-7 text-center shadow-[0_6px_16px_rgba(57,107,151,0.12)]">
+        <div className="flex gap-2" aria-hidden="true">
+          {[0, 1, 2].map((dot) => (
+            <span key={dot} className="size-3 animate-bounce rounded-full bg-pink-400" style={{ animationDelay: `${dot * 140}ms` }} />
+          ))}
+        </div>
+        <p className="font-display text-xl font-semibold text-[#17213e]">Finding your quiz…</p>
+        <p className="font-display text-base text-[#3b4a6b]">Getting you to the right place.</p>
+      </div>
+    );
+  }
+
   return (
     <form onSubmit={onSubmit} noValidate className="flex flex-col gap-5">
       <NameField
@@ -62,7 +76,7 @@ export function StartForm({ slug, ownerName }: { slug: string; ownerName: string
         invalid={error !== null && !isPending}
       />
       {error && <ErrorNote>{error}</ErrorNote>}
-      <BigButton type="submit" pending={isPending || checking} pendingLabel={checking ? "Checking…" : "Fetching questions…"} aria-label={`Start ${ownerName}'s quiz`}>
+      <BigButton type="submit" pending={isPending} pendingLabel="Fetching questions…" aria-label={`Start ${ownerName}'s quiz`}>
         start quiz
       </BigButton>
     </form>
