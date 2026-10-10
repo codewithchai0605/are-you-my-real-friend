@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Bear, Panda } from "@/components/mascots";
 import { AdsterraAd } from "@/components/adsterra-ad";
 import { Shell } from "@/components/shell";
 import { ShareActions } from "@/components/share-actions";
-import { getQuizBySlug } from "@/lib/server/quizzes";
+import { VISITOR_COOKIE } from "@/lib/constants";
+import { getQuizBySlug, getVisitorStatus } from "@/lib/server/quizzes";
 import { getOrigin } from "@/lib/server/origin";
-import { isSlug } from "@/lib/validation";
+import { isSlug, isUuid } from "@/lib/validation";
 import { RememberQuiz } from "./remember-quiz";
 import Image from "next/image";
 
@@ -21,6 +23,23 @@ export default async function SharePage({ params }: Props) {
   if (!isSlug(slug)) notFound();
   const quiz = await getQuizBySlug(slug);
   if (!quiz) notFound();
+
+  // Never stream the share screen to a friend. The only browser that may render
+  // it is the one whose server-side visitor cookie created this quiz.
+  const visitorId = (await cookies()).get(VISITOR_COOKIE)?.value;
+  if (!isUuid(visitorId)) redirect(`/q/${slug}`);
+
+  if (quiz.ownerVisitorId !== visitorId) {
+    let target = `/q/${slug}`;
+    try {
+      const status = await getVisitorStatus(slug, visitorId);
+      if (status?.kind === "completed") target = `/q/${slug}/done/${status.attemptId}`;
+      else if (status?.kind === "play") target = `/q/${slug}/play/${status.attemptId}`;
+    } catch (error) {
+      console.error("[SharePage visitor status]", error);
+    }
+    redirect(target);
+  }
 
   const url = `${await getOrigin()}/q/${slug}`;
 
